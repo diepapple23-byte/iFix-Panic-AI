@@ -1,312 +1,224 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PanicAI Tool</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f1f5f9;
-      color: #0f172a;
-    }
-
-    header {
-      background: #020617;
-      color: white;
-      padding: 30px;
-      text-align: center;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 30px auto;
-      padding: 20px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 20px;
-      padding: 25px;
-      margin-bottom: 20px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-    }
-
-    input, button, textarea {
-      width: 100%;
-      padding: 14px;
-      margin-top: 10px;
-      border-radius: 12px;
-      border: 1px solid #cbd5e1;
-      font-size: 16px;
-    }
-
-    button {
-      background: #020617;
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    button:hover {
-      background: #1e293b;
-    }
-
-    .result {
-      background: #f8fafc;
-      border-left: 5px solid #0f172a;
-      padding: 20px;
-      border-radius: 12px;
-      margin-top: 20px;
-    }
-
-    .danger {
-      color: #dc2626;
-      font-weight: bold;
-    }
-
-    .warning {
-      color: #d97706;
-      font-weight: bold;
-    }
-
-    .good {
-      color: #16a34a;
-      font-weight: bold;
-    }
-
-    .tag {
-      display: inline-block;
-      background: #e2e8f0;
-      padding: 6px 12px;
-      border-radius: 999px;
-      margin: 4px;
-      font-size: 14px;
-    }
-
-    pre {
-      white-space: pre-wrap;
-      background: #020617;
-      color: #e2e8f0;
-      padding: 20px;
-      border-radius: 15px;
-      max-height: 300px;
-      overflow: auto;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PanicAI Tool</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Segoe UI,Arial;background:#0f172a;color:#e5e7eb}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;background:#020617;padding:22px}
+.logo{font-size:26px;font-weight:900;margin-bottom:25px;color:#38bdf8}
+.menu button{width:100%;padding:14px;margin:7px 0;border:0;border-radius:12px;background:#111827;color:white;text-align:left;font-weight:700;cursor:pointer}
+.menu button.active,.menu button:hover{background:#38bdf8;color:#020617}
+.main{margin-left:260px;padding:28px}
+.card{background:#111827;border:1px solid #1f2937;border-radius:20px;padding:24px;margin-bottom:20px;box-shadow:0 10px 30px #0005}
+h1,h2,h3{margin-top:0}
+input,textarea,button{width:100%;padding:14px;border-radius:12px;border:1px solid #334155;background:#020617;color:white;font-size:15px;margin-top:10px}
+button{background:#38bdf8;color:#020617;font-weight:900;cursor:pointer;border:0}
+button:hover{background:#7dd3fc}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.tag{display:inline-block;background:#1e293b;border:1px solid #334155;padding:7px 12px;border-radius:999px;margin:4px}
+.ok{color:#22c55e}.warn{color:#f59e0b}.bad{color:#ef4444}
+pre{background:#020617;padding:18px;border-radius:14px;max-height:320px;overflow:auto;white-space:pre-wrap}
+.hidden{display:none}
+.stat{font-size:28px;font-weight:900;color:#38bdf8}
+</style>
 </head>
-
 <body>
-  <header>
-    <h1>PanicAI Tool</h1>
-    <p>Công cụ phân tích panic-full iPhone</p>
-  </header>
 
-  <div class="container">
-    <div class="card">
-      <h2>Đăng ký sử dụng</h2>
-      <input id="shopName" placeholder="Tên cửa hàng / kỹ thuật viên" />
-      <input id="phone" placeholder="Số điện thoại" />
-      <input id="email" placeholder="Email" />
-      <button onclick="register()">Đăng ký và bắt đầu</button>
-      <p id="registerStatus"></p>
-    </div>
-
-    <div class="card" id="toolBox" style="display:none;">
-      <h2>Upload file panic-full</h2>
-      <input type="file" id="fileInput" accept=".ips,.txt,.log,.json" />
-      <button onclick="analyzeFile()">Phân tích log</button>
-
-      <div id="result"></div>
-    </div>
-
-    <div class="card" id="previewBox" style="display:none;">
-      <h2>Preview log</h2>
-      <pre id="logPreview"></pre>
-    </div>
+<div class="sidebar">
+  <div class="logo">⚡ PanicAI Tool</div>
+  <div class="menu">
+    <button class="active" onclick="page('dashboard',this)">🏠 Dashboard</button>
+    <button onclick="page('connect',this)">📱 Connect iPhone</button>
+    <button onclick="page('analyze',this)">🔍 Analyze Panic</button>
+    <button onclick="page('rules',this)">🧠 Database Lỗi</button>
+    <button onclick="page('history',this)">📁 History</button>
+    <button onclick="page('about',this)">⚙️ About</button>
   </div>
+</div>
 
-  <script>
-    function register() {
-      const shopName = document.getElementById("shopName").value;
-      const phone = document.getElementById("phone").value;
-      const email = document.getElementById("email").value;
+<div class="main">
 
-      if (!shopName || !phone || !email) {
-        alert("Vui lòng nhập đủ thông tin đăng ký");
-        return;
-      }
+<section id="dashboard" class="page">
+  <div class="card">
+    <h1>PanicAI Diagnostic Tool</h1>
+    <p>Tool hỗ trợ kỹ thuật viên phân tích panic-full iPhone.</p>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="stat" id="totalLogs">0</div><p>Log đã phân tích</p></div>
+    <div class="card"><div class="stat">Rule</div><p>Chẩn đoán offline</p></div>
+    <div class="card"><div class="stat">TXT</div><p>Xuất báo cáo</p></div>
+  </div>
+</section>
 
-      localStorage.setItem("panicai_user", JSON.stringify({
-        shopName,
-        phone,
-        email
-      }));
+<section id="connect" class="page hidden">
+  <div class="card">
+    <h1>Connect iPhone</h1>
+    <p>Bản GitHub Pages không thể đọc trực tiếp iPhone. Tính năng này là giao diện mô phỏng.</p>
+    <button onclick="fakeConnect()">Connect iPhone</button>
+    <div id="connectResult"></div>
+  </div>
+</section>
 
-      document.getElementById("registerStatus").innerHTML =
-        "<span class='good'>Đăng ký thành công!</span>";
+<section id="analyze" class="page hidden">
+  <div class="card">
+    <h1>Analyze Panic Log</h1>
+    <p>Upload file <b>.ips .txt .log .json</b></p>
+    <input type="file" id="fileInput" accept=".ips,.txt,.log,.json">
+    <button onclick="analyzeFile()">Analyze Now</button>
+    <div id="result"></div>
+  </div>
+  <div class="card hidden" id="previewBox">
+    <h2>Log Preview</h2>
+    <pre id="preview"></pre>
+  </div>
+</section>
 
-      document.getElementById("toolBox").style.display = "block";
-    }
+<section id="rules" class="page hidden">
+  <div class="card">
+    <h1>Database Lỗi</h1>
+    <div id="ruleList"></div>
+  </div>
+</section>
 
-    async function analyzeFile() {
-      const file = document.getElementById("fileInput").files[0];
+<section id="history" class="page hidden">
+  <div class="card">
+    <h1>History</h1>
+    <div id="historyList">Chưa có lịch sử.</div>
+  </div>
+</section>
 
-      if (!file) {
-        alert("Vui lòng chọn file panic-full");
-        return;
-      }
+<section id="about" class="page hidden">
+  <div class="card">
+    <h1>About</h1>
+    <p><b>PanicAI Tool</b> là bản web tĩnh chạy bằng GitHub Pages.</p>
+    <p>Không cần đăng nhập, không cần server.</p>
+  </div>
+</section>
 
-      const text = await file.text();
-      const lower = text.toLowerCase();
+</div>
 
-      document.getElementById("previewBox").style.display = "block";
-      document.getElementById("logPreview").innerText = text.slice(0, 8000);
+<script>
+const rules=[
+ {k:["thermalmonitord","missing sensor","thermal"],t:"Nghi lỗi cảm biến nhiệt",lv:"Cao",cf:86,p:["Cụm sạc","Pin","Cảm biến nhiệt","Mainboard"],a:"Kiểm tra cụm sạc, pin, socket, cảm biến nhiệt."},
+ {k:["baseband","modem","cellular"],t:"Nghi lỗi baseband / sóng",lv:"Cao",cf:88,p:["Baseband","IC nguồn BB","Mainboard","Anten"],a:"Kiểm tra IMEI, sóng, modem firmware, khu vực baseband."},
+ {k:["nand","storage","nvme","apfs"],t:"Nghi lỗi NAND / bộ nhớ",lv:"Cao",cf:82,p:["NAND","Đường dữ liệu","Mainboard"],a:"Kiểm tra lỗi restore, treo táo, reboot lặp."},
+ {k:["watchdog","timeout","userspace watchdog"],t:"Nghi lỗi watchdog timeout",lv:"Trung bình",cf:65,p:["iOS","Cụm linh kiện phụ","Mainboard"],a:"Có thể restore trước, sau đó kiểm tra phần cứng."},
+ {k:["i2c"],t:"Nghi lỗi đường I2C",lv:"Cao",cf:78,p:["Camera","Face ID","Cụm sạc","Mainboard"],a:"Kiểm tra linh kiện giao tiếp I2C và socket liên quan."},
+ {k:["charging","usb","dock","tristar","hydra"],t:"Nghi lỗi sạc / USB",lv:"Trung bình",cf:72,p:["Cụm sạc","IC sạc","Cáp sạc","Mainboard"],a:"Kiểm tra chân sạc, cụm sạc, IC sạc, dấu hiệu vào nước."}
+];
 
-      let results = [];
+function page(id,btn){
+ document.querySelectorAll(".page").forEach(p=>p.classList.add("hidden"));
+ document.getElementById(id).classList.remove("hidden");
+ document.querySelectorAll(".menu button").forEach(b=>b.classList.remove("active"));
+ btn.classList.add("active");
+ if(id==="rules") loadRules();
+ if(id==="history") loadHistory();
+ updateStats();
+}
 
-      if (lower.includes("thermalmonitord") || lower.includes("missing sensor")) {
-        results.push({
-          title: "Nghi lỗi cảm biến nhiệt",
-          level: "Cao",
-          confidence: "85%",
-          parts: ["Cụm sạc", "Pin", "Cảm biến nhiệt", "Mainboard"],
-          advice: "Kiểm tra cụm sạc, pin, socket và cảm biến nhiệt."
-        });
-      }
+function fakeConnect(){
+ document.getElementById("connectResult").innerHTML=
+ `<div class="card"><h3 class="ok">iPhone Ready</h3><p>Đây là mô phỏng. Muốn lấy log thật cần app Windows/macOS dùng libimobiledevice.</p></div>`;
+}
 
-      if (lower.includes("baseband") || lower.includes("modem")) {
-        results.push({
-          title: "Nghi lỗi baseband / sóng",
-          level: "Cao",
-          confidence: "88%",
-          parts: ["Baseband", "IC nguồn BB", "Mainboard", "Anten"],
-          advice: "Kiểm tra IMEI, sóng, modem firmware và khu vực baseband."
-        });
-      }
+async function analyzeFile(){
+ const file=document.getElementById("fileInput").files[0];
+ if(!file){alert("Chọn file panic-full trước");return}
+ const text=await file.text();
+ const lower=text.toLowerCase();
+ document.getElementById("previewBox").classList.remove("hidden");
+ document.getElementById("preview").innerText=text.slice(0,10000);
 
-      if (lower.includes("nand") || lower.includes("storage") || lower.includes("nvme")) {
-        results.push({
-          title: "Nghi lỗi NAND / bộ nhớ",
-          level: "Cao",
-          confidence: "80%",
-          parts: ["NAND", "Đường dữ liệu", "Mainboard"],
-          advice: "Kiểm tra lỗi restore, treo táo, reboot lặp."
-        });
-      }
+ let found=[];
+ rules.forEach(r=>{
+   if(r.k.some(x=>lower.includes(x))) found.push(r);
+ });
 
-      if (lower.includes("watchdog") || lower.includes("timeout")) {
-        results.push({
-          title: "Nghi lỗi watchdog timeout",
-          level: "Trung bình",
-          confidence: "65%",
-          parts: ["iOS", "Cụm linh kiện phụ", "Mainboard"],
-          advice: "Có thể thử restore trước, sau đó kiểm tra phần cứng."
-        });
-      }
+ if(found.length===0){
+   found=[{t:"Chưa nhận diện được lỗi",lv:"Thấp",cf:30,p:["Cần phân tích thủ công"],a:"Cần đọc panicString chi tiết hoặc bổ sung database keyword."}]
+ }
 
-      if (lower.includes("i2c")) {
-        results.push({
-          title: "Nghi lỗi đường I2C",
-          level: "Cao",
-          confidence: "78%",
-          parts: ["Camera", "Face ID", "Cụm sạc", "Mainboard"],
-          advice: "Kiểm tra các linh kiện giao tiếp I2C và socket liên quan."
-        });
-      }
+ showResult(found);
+ saveHistory(file.name,found[0].t);
+}
 
-      if (lower.includes("charging") || lower.includes("usb") || lower.includes("dock")) {
-        results.push({
-          title: "Nghi lỗi sạc / USB",
-          level: "Trung bình",
-          confidence: "72%",
-          parts: ["Cụm sạc", "IC sạc", "Cáp sạc", "Mainboard"],
-          advice: "Kiểm tra chân sạc, cụm sạc, IC sạc và dấu hiệu vào nước."
-        });
-      }
+function showResult(found){
+ let html=`<div class="card"><h2>Kết quả chẩn đoán</h2>`;
+ found.forEach(r=>{
+   html+=`
+   <div class="card">
+    <h3>${r.t}</h3>
+    <p><b>Mức độ:</b> ${r.lv}</p>
+    <p><b>Độ tin cậy:</b> ${r.cf}%</p>
+    <p><b>Linh kiện nghi ngờ:</b></p>
+    <p>${r.p.map(x=>`<span class="tag">${x}</span>`).join("")}</p>
+    <p><b>Hướng kiểm tra:</b> ${r.a}</p>
+   </div>`;
+ });
+ html+=`<button onclick="exportReport()">Export Report TXT</button></div>`;
+ document.getElementById("result").innerHTML=html;
+ localStorage.setItem("lastResult",JSON.stringify(found));
+}
 
-      if (results.length === 0) {
-        results.push({
-          title: "Chưa nhận diện được lỗi",
-          level: "Thấp",
-          confidence: "30%",
-          parts: ["Cần phân tích thủ công"],
-          advice: "Cần đọc panicString chi tiết hoặc bổ sung database keyword."
-        });
-      }
+function saveHistory(file,result){
+ let h=JSON.parse(localStorage.getItem("history")||"[]");
+ h.unshift({time:new Date().toLocaleString(),file,result});
+ localStorage.setItem("history",JSON.stringify(h.slice(0,30)));
+ updateStats();
+}
 
-      showResult(results, text);
-    }
+function loadHistory(){
+ let h=JSON.parse(localStorage.getItem("history")||"[]");
+ if(!h.length){document.getElementById("historyList").innerHTML="Chưa có lịch sử.";return}
+ document.getElementById("historyList").innerHTML=h.map(x=>`
+ <div class="card">
+  <h3>${x.file}</h3>
+  <p>${x.time}</p>
+  <p>${x.result}</p>
+ </div>`).join("");
+}
 
-    function showResult(results, text) {
-      let html = "<div class='result'>";
-      html += "<h2>Kết quả chẩn đoán</h2>";
+function loadRules(){
+ document.getElementById("ruleList").innerHTML=rules.map(r=>`
+ <div class="card">
+  <h3>${r.t}</h3>
+  <p><b>Keyword:</b> ${r.k.join(", ")}</p>
+  <p><b>Linh kiện:</b> ${r.p.join(", ")}</p>
+ </div>`).join("");
+}
 
-      results.forEach(item => {
-        html += `
-          <h3>${item.title}</h3>
-          <p><b>Mức độ:</b> ${item.level}</p>
-          <p><b>Độ tin cậy:</b> ${item.confidence}</p>
-          <p><b>Linh kiện nghi ngờ:</b></p>
-          <p>${item.parts.map(p => `<span class="tag">${p}</span>`).join("")}</p>
-          <p><b>Hướng kiểm tra:</b> ${item.advice}</p>
-          <hr>
-        `;
-      });
+function exportReport(){
+ const r=JSON.parse(localStorage.getItem("lastResult")||"[]");
+ let txt="PANICAI TOOL REPORT\n\n";
+ r.forEach((x,i)=>{
+   txt+=`${i+1}. ${x.t}
+Mức độ: ${x.lv}
+Độ tin cậy: ${x.cf}%
+Linh kiện nghi ngờ: ${x.p.join(", ")}
+Hướng kiểm tra: ${x.a}
 
-      html += "<button onclick='exportReport()'>Xuất báo cáo</button>";
-      html += "</div>";
-
-      document.getElementById("result").innerHTML = html;
-
-      localStorage.setItem("panicai_last_result", JSON.stringify(results));
-    }
-
-    function exportReport() {
-      const user = JSON.parse(localStorage.getItem("panicai_user") || "{}");
-      const results = JSON.parse(localStorage.getItem("panicai_last_result") || "[]");
-
-      let report = `
-PANICAI REPORT
-
-Cửa hàng / Kỹ thuật viên: ${user.shopName || ""}
-Số điện thoại: ${user.phone || ""}
-Email: ${user.email || ""}
-
-KẾT QUẢ CHẨN ĐOÁN:
 `;
+ });
+ const blob=new Blob([txt],{type:"text/plain"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;
+ a.download="panicai-report.txt";
+ a.click();
+ URL.revokeObjectURL(url);
+}
 
-      results.forEach((item, index) => {
-        report += `
+function updateStats(){
+ let h=JSON.parse(localStorage.getItem("history")||"[]");
+ document.getElementById("totalLogs").innerText=h.length;
+}
 
-${index + 1}. ${item.title}
-Mức độ: ${item.level}
-Độ tin cậy: ${item.confidence}
-Linh kiện nghi ngờ: ${item.parts.join(", ")}
-Hướng kiểm tra: ${item.advice}
-`;
-      });
+updateStats();
+</script>
 
-      const blob = new Blob([report], { type: "text/plain" });
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "panicai-report.txt";
-      a.click();
-
-      URL.revokeObjectURL(url);
-    }
-
-    window.onload = function () {
-      const user = localStorage.getItem("panicai_user");
-      if (user) {
-        document.getElementById("toolBox").style.display = "block";
-        document.getElementById("registerStatus").innerHTML =
-          "<span class='good'>Đã đăng ký, có thể sử dụng tool.</span>";
-      }
-    };
-  </script>
 </body>
 </html>
